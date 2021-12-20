@@ -5,7 +5,7 @@ function getInputDoc() {
 }
 
 function getStartWord() {
-  return Array.from(document.getElementsByClassName("jjo-display ellipse")).filter(e => Object.getOwnPropertyNames(e).length > 0)[0].innerText;
+  return Array.from(document.getElementsByClassName("jjo-display ellipse")).filter(e => e.scrollHeight > 0)[0].innerText;
 }
 
 function getRandomWord(startWord) {
