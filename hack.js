@@ -3,9 +3,8 @@
     "https://raw.githubusercontent.com/DwarfSGJ/kkutuKoreaHack/stable/list.json"
   );
   const text = await response.text();
-  eval(text);
 
-  const list = window.rnDictEn.concat(window.rnDictKill);
+  const list = JSON.parse(text);
   let historyList = [];
 
   function getStartWord() {
