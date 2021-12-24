@@ -6,20 +6,27 @@ let kkutuHack = {};
   );
   const text = await response.text();
   const list = JSON.parse(text);
+
+  console.log("Word List Loaded!");
+
   let historyList = [];
-  let option = { sort: false, endWord: "" };
+  let option = {
+    sort: false,
+    sortFunc: (a, b) => a.length - b.length,
+    endWord: "",
+  };
 
   function getStartWord() {
     return document.getElementsByClassName("jjo-display ellipse")[0].innerText;
   }
 
-  function getWord(startWord, endWord, lwo) {
+  function getWord(startWord, endWord, lwo, sortFunc) {
     if (startWord.includes("(")) {
       startWord = startWord.replace(")", "").split("(");
       const wordList = getWord(startWord[0], endWord)
         .concat(getWord(startWord[1], endWord))
         .filter((e) => e !== undefined);
-      if (lwo) wordList.sort((a, b) => b.length - a.length);
+      if (lwo) wordList.sort(sortFunc);
       if (endWord !== "")
         wordList.sort((a, b) => (a.endsWith(endWord) ? 1 : -1));
       return wordList;
@@ -29,7 +36,7 @@ let kkutuHack = {};
       (e) => !historyList.includes(e) && e.startsWith(startWord)
     );
 
-    if (lwo) wordList.sort((a, b) => b.length - a.length);
+    if (lwo) wordList.sort(sortFunc);
     if (endWord !== "") wordList.sort((a, b) => (a.endsWith(endWord) ? 1 : -1));
     return wordList;
   }
@@ -53,9 +60,14 @@ let kkutuHack = {};
     mutations.forEach((mutation) => {
       if (mutation.target.style.display === "block") {
         const startWord = getStartWord();
-        const wordList = getWord(startWord, option.endWord, option.sort);
+        const wordList = getWord(
+          startWord,
+          option.endWord,
+          option.sort,
+          option.sortFunc
+        );
 
-        console.log(startWord + ": " + wordList.join("\n"));
+        console.dir(startWord + ": " + wordList.join("\n"));
       }
     });
   });
@@ -66,6 +78,8 @@ let kkutuHack = {};
   observer.observe(target, { attributes: true, attributeFilter: ["style"] });
 
   const task = setInterval(updateHistory, 100);
+
+  console.log("Hack Enabled!");
 
   kkutuHack = {
     list,
